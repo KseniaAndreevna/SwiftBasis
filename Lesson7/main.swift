@@ -25,7 +25,7 @@ enum TeapotError: Error {
 }
 
 class Teapot {
-    var isOpen: Bool = false
+    var isOpen: Bool = true
     var isInSocket: Bool = true
     var isSwitchedOn: Bool = false
     var maxVolume: Int = 1000 //ml
@@ -42,6 +42,7 @@ class Teapot {
             return (nil, .tooMuchWater(filledVolume))
         }
         
+        filledVolume += value
         return (filledVolume, nil)
     }
     
@@ -68,6 +69,7 @@ class Teapot {
             return (nil, .noWater)
         }
         
+        filledVolume -= value
         return (filledVolume, nil)
     }
     
@@ -102,7 +104,7 @@ enum CupError: Error {
 
 class Cup {
     var maxVolume: Int = 250
-    var filledVolume: Int = 0
+    var filledVolume: Int = 200
     var isClean: Bool = true
     var isOpen: Bool = true
  
@@ -116,6 +118,7 @@ class Cup {
         throw CupError.tooMuchWater(filledVolume)
     }
 
+    filledVolume += value
     return filledVolume
 }
 
@@ -128,6 +131,7 @@ class Cup {
         throw CupError.noWater
     }
     
+    filledVolume -= value
     return filledVolume
 }
 
@@ -143,11 +147,15 @@ print(teapot.addWater(2000)) //cantAddWaterLidClosed
 let cup = Cup()
 
 do {
-    try cup.drinkTea(500)
+    let vol = try cup.drinkTea(50)
+    print("\(vol) in cup")
 } catch let error {
     print(error)
 } // ошибка noWater
 
 // Не могу разобраться, почему возвращает nil при попытке налить воды больше чем можно
-let pourCup: Int? = try? cup.pourCupOfTea(350)
-print(pourCup)
+let addVol = try? cup.pourCupOfTea(100)
+print("\(addVol) in cup")
+//let pourCup: Int = try cup.pourCupOfTea(150)
+//print(pourCup)
+//print(cup.filledVolume)
